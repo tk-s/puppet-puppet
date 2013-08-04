@@ -1,12 +1,15 @@
 class puppet::server::nginx {
-
   include puppet::server::rack
+
+  Ini_setting <| tag == 'puppet-server' |> ~> Nginx::Vhost['puppet-server']
+  Ini_setting <| tag == 'puppet-server' |> ~> Unicorn::App['puppet-server']
 
   Ini_setting {
     ensure  => present,
     path    => hiera('puppet_conf'),
     section => 'master',
     require => Package['puppet-server'],
+    tag     => 'puppet-server',
   }
 
   ini_setting {
@@ -54,6 +57,13 @@ class puppet::server::nginx {
   # Dirty hack because apt starts the puppet master by default
   exec { 'kill puppetmaster':
     command     => '/etc/init.d/puppetmaster stop',
+    refreshonly => true,
+    notify      => Exec['kick unicorn'],
+  }
+
+  # Another dirty hack to kick unicorn post-install
+  exec { 'kick unicorn':
+    command     => '/etc/init.d/unicorn_puppet-server restart',
     refreshonly => true,
   }
 

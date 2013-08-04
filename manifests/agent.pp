@@ -1,10 +1,13 @@
 class puppet::agent {
 
+  Ini_setting <| tag =='puppet-agent' |> ~> Service['puppet']
+
   Ini_setting {
     ensure  => present,
     section => 'agent',
     path    => hiera('puppet_conf'),
     require => Package['puppet'],
+    tag     => 'puppet-agent',
   }
 
   package { 'puppet':
@@ -28,4 +31,11 @@ class puppet::agent {
       setting => 'certname',
       value   => $::clientcert;
   }
+
+  service { 'puppet':
+    ensure  => running,
+    enable  => true,
+    require => [package['puppet'], ini_setting['agent/certname']],
+  }
+
 }
