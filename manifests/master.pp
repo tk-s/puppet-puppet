@@ -17,6 +17,14 @@ class puppet::master (
     }
   }
 
+  file { $settings['master']['reportdir']:
+    ensure  => directory,
+    recurse => true,
+    owner   => 'puppet',
+    group   => 'puppet',
+    mode    => '0640',
+  }
+
   package { 'puppet-master':
     name    => $master_package,
     ensure  => $package_ensure,
