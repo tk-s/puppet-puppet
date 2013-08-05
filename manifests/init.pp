@@ -5,22 +5,26 @@ class puppet (
   $agent_package_ensure  = $::puppet::params::package_ensure,
   $master_package_ensure = $::puppet::params::package_ensure,
   $config_file           = $::puppet::params::config_file,
-  $agent                 = false,
+  $agent                 = true,
   $agent_service         = 'daemon',
   $master                = false,
   $master_type           = false
 ) inherits puppet::params {
 
-  $settings['main'].each { |$setting, $value|
-    ini_setting { "main/${setting}":
-      ensure  => present,
-      path    => $config_file,
-      section => 'main',
-      setting => $setting,
-      value   => $value,
-      tag     => 'puppet-config',
-      require => Package['puppet'],
+  if (has_key($settings, 'main')) {
+    $settings['main'].each { |$setting, $value|
+      ini_setting { "main/${setting}":
+        ensure  => present,
+        path    => $config_file,
+        section => 'main',
+        setting => $setting,
+        value   => $value,
+        tag     => 'puppet-config',
+        require => Package['puppet'],
+      }
     }
+  } else {
+    fail('Must pass $settings with a "main" hash of key => value settings.')
   }
 
   if ($agent) {
