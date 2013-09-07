@@ -1,15 +1,8 @@
 class puppet::agent (
   $settings,
-  $agent_package  = $::puppet::params::agent_package,
-  $package_ensure = $::puppet::params::package_ensure,
-  $config_file    = $::puppet::params::config_file,
-  $service        = 'daemon'
+  $config_file = $::puppet::params::config_file,
+  $service     = 'daemon'
 ) inherits puppet::params {
-
-  package { 'puppet':
-    name   => $agent_package,
-    ensure => $agent_package_ensure,
-  }
 
   if (has_key($settings, 'agent')) {
     $settings['agent'].each { |$setting, $value|

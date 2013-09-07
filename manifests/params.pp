@@ -1,8 +1,8 @@
 class puppet::params {
 
   $config_file    = '/etc/puppet/puppet.conf'
-  $agent_package  = 'puppet'
-  $master_package = 'puppetmaster'
+  $package_name   = 'puppet'
   $package_ensure = 'latest'
+  $master_package = 'puppetmaster'
 
 }
