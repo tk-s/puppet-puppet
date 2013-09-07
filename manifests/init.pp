@@ -10,20 +10,16 @@ class puppet (
     ensure => $package_ensure,
   }
 
-  if (has_key($settings, 'main')) {
-    $settings['main'].each { |$setting, $value|
-      ini_setting { "main/${setting}":
-        ensure  => present,
-        path    => $config_file,
-        section => 'main',
-        setting => $setting,
-        value   => $value,
-        tag     => 'puppet-config',
-        require => Package['puppet'],
-      }
+  $settings.each { |$setting, $value|
+    ini_setting { "main/${setting}":
+      ensure  => present,
+      path    => $config_file,
+      section => 'main',
+      setting => $setting,
+      value   => $value,
+      tag     => 'puppet-config',
+      require => Package['puppet'],
     }
-  } else {
-    fail('Must pass $settings with a "main" hash of key => value settings.')
   }
 
 }

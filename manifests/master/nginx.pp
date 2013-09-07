@@ -18,16 +18,16 @@ class puppet::master::nginx(
   }
 
   # Create an Nginx vhost
-  $ssldir = $settings['main']['ssldir']
+  $ssldir = $settings['ssldir']
   nginx::vhost { 'puppet-master':
     port     => 8140,
     template => 'puppet/nginx/unicorn.conf.erb',
   }
 
   # Create a unicorn app
-  $confdir = $settings['main']['confdir']
-  $rundir  = $settings['main']['rundir']
-  $logdir  = $settings['main']['logdir']
+  $confdir = $settings['confdir']
+  $rundir  = $settings['rundir']
+  $logdir  = $settings['logdir']
   unicorn::app { 'puppet-master':
     approot         => $confdir,
     config_file     => "${confdir}/unicorn.conf",
