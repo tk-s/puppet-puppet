@@ -29,14 +29,15 @@ class puppet::master::nginx(
   $rundir  = $settings['rundir']
   $logdir  = $settings['logdir']
   unicorn::app { 'puppet-master':
-    approot         => $confdir,
-    config_file     => "${confdir}/unicorn.conf",
-    pidfile         => "${rundir}/puppetmaster_unicorn.pid",
-    socket          => "${rundir}/puppetmaster_unicorn.sock",
-    logdir          => $logdir,
-    user            => 'puppet',
-    group           => 'puppet',
-    require         => Nginx::Vhost['puppet-master'],
+    approot     => $confdir,
+    config_file => "${confdir}/unicorn.conf",
+    pidfile     => "${rundir}/puppetmaster_unicorn.pid",
+    socket      => "${rundir}/puppetmaster_unicorn.sock",
+    logdir      => $logdir,
+    user        => 'puppet',
+    group       => 'puppet',
+    require     => Nginx::Vhost['puppet-master'],
+    notify      => Exec['kick unicorn'],
   }
 
   # Configure Rack
