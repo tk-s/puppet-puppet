@@ -59,6 +59,7 @@ class puppet::master::nginx(
   exec { 'kick unicorn':
     command     => '/etc/init.d/unicorn_puppet-master restart',
     refreshonly => true,
+    require     => Unicorn::App['puppet-master'],
   }
 
 }
