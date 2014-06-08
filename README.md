@@ -2,12 +2,12 @@
 
 This is a small puppet module to configure Puppet. It is roughly based on the [puppetlabs-operations](http://github.com/puppetlabs-operations/puppet-puppet) module.
 
-It is *very* site-specific and is not really mean for widespread use.
+To configure the Puppet Master with Nginx, you'll need the following modules:
 
-It also requires some of my other modules:
+* [jtopjian/nginx](https://github.com/jtopjian/puppet-nginx)
+* [jtopjian/unicorn](https://github.com/jtopjian/puppet-unicorn)
 
-* [nginx](https://github.com/jtopjian/puppet-nginx)
-* [unicorn](https://github.com/jtopjian/puppet-unicorn)
+Or to configure the Puppet Master to be hosted through Passenger, you'll need the [puppetlabs/apache](https://github.com/puppetlabs/puppetlabs-apache) module.
 
 ## Usage
 
