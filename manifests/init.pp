@@ -10,8 +10,8 @@ class puppet (
     ensure => $package_ensure,
   }
 
-  $settings.each { |$setting, $value|
-    ini_setting { "main/${setting}":
+  $settings.each |$setting, $value| {
+    ini_setting { "${config_file} main/${setting}":
       ensure  => present,
       path    => $config_file,
       section => 'main',

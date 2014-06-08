@@ -1,12 +1,14 @@
 class puppet::master (
   $settings,
+  $servertype     = 'standalone',
   $master_package = $::puppet::params::master_package,
   $package_ensure = $::puppet::params::package_ensure,
+  $master_service = $::puppet::params::master_service,
   $config_file    = $::puppet::params::config_file,
 ) inherits puppet::params {
 
-  $settings.each { |$setting, $value|
-    ini_setting { "master/${setting}":
+  $settings.each |$setting, $value| {
+    ini_setting { "${config_file} master/${setting}":
       ensure  => present,
       path    => $config_file,
       section => 'master',
@@ -17,7 +19,7 @@ class puppet::master (
     }
   }
 
-  if (has_key($settings, 'reportdir')) {
+  if has_key($settings, 'reportdir') {
     file { $settings['reportdir']:
       ensure  => directory,
       recurse => true,
@@ -30,7 +32,18 @@ class puppet::master (
   package { 'puppet-master':
     name    => $master_package,
     ensure  => $package_ensure,
-    require => Package['rake'],
+  }
+
+  case $servertype {
+    'passenger': {
+      include puppet::master::passenger
+    }
+    'nginx': {
+      include puppet::master::nginx
+    }
+    'standalone': {
+      include puppet::master::standalone
+    }
   }
 
 }

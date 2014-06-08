@@ -1,5 +1,5 @@
-class puppet::master::nginx(
-  $settings
+class puppet::master::nginx (
+  $settings,
 ) inherits puppet::params {
 
   Ini_setting<| tag == 'puppet-config' |> ~> Unicorn::App['puppet-master']
@@ -11,10 +11,16 @@ class puppet::master::nginx(
         path    => '/etc/default/puppetmaster',
         line    => 'START=no',
         match   => '^START=',
-        notify  => Exec['kill puppetmaster'],
         require => Package['puppet-master'],
       }
     }
+  }
+
+  service { 'puppet-master':
+    name    => $::puppet::master::master_service,
+    ensure  => 'stopped',
+    enable  => false,
+    require => Package['puppet-master'],
   }
 
   # Create an Nginx vhost
@@ -49,14 +55,7 @@ class puppet::master::nginx(
     notify => Nginx::Vhost['puppet-master'],
   }
 
-  # Dirty hack because apt starts the puppet master by default
-  exec { 'kill puppetmaster':
-    command     => '/etc/init.d/puppetmaster stop',
-    refreshonly => true,
-    notify      => Exec['kick unicorn'],
-  }
-
-  # Another dirty hack to kick unicorn post-install
+  # dirty hack to kick unicorn post-install
   exec { 'kick unicorn':
     command     => '/etc/init.d/unicorn_puppet-master restart',
     refreshonly => true,

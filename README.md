@@ -17,27 +17,49 @@ This module takes advantage of the new iteration features of Puppet 3.2, so you 
 parser = future
 ```
 
-Next, the `init` manifest takes a parameter called `$settings`. `$settings` is a nested hash with the following sub-hashes: `main`, `agent`, `master`. These sub-hashes correspond to the various sections of `puppet.conf`. An example `$settings` hash looks like:
+The three main classes, `init`, `agent`, and `master` require a `settings` parameter. This parameter is a nested key/value hash of settings that go in `puppet.conf`. For example:
+
+```yaml
+# puppet.confg [main] settings
+puppet::settings:
+  logdir: '/var/log/puppet'
+  vardir: '/var/lib/puppet'
+  ssldir: '/var/lib/puppet/ssl'
+  rundir: '/var/run/puppet'
+  parser: 'future'
+  evaluator: 'current'
+  ordering: 'manifest'
+  environmentpath: '$confdir/environments'
+  server: 'puppet.z.terrarum.net'
+  ca_server: 'puppet.z.terrarum.net'
+  report_server: 'puppet.z.terrarum.net'
+  pluginsync: true
+# puppet.conf [agent] settings
+puppet::agent::settings:
+  certname: "%{::fqdn}"
+  show_diff: true
+  splay: false
+  configtimeout: 360
+  usecacheonfailure: true
+  report: true
+  environment: "%{::environment}"
+# puppet.conf [master] settings
+puppet::master::settings:
+  ca: true
+# puppet master configuration
+puppet::master::servertype: 'passenger'
+```
+
+Then to configure a server as a Puppet Master, create a class like this:
 
 ```puppet
-$puppet_config = {
-  'main'        => {
-    confdir     => '/etc/puppet',
-    logdir      => '/var/log/puppet',
-    vardir      => '/var/lib/puppet',
-    ssldir      => '/var/lib/puppet/ssl',
-    rundir      => '/var/run/puppet',
-    templatedir => '/etc/puppet/templates',
-    modulepath  => '/etc/puppet/site/modules:/etc/puppet/modules',
-    parser      => 'future',
-  },
-  'agent'  => {
-    certname => $::clientcert,
-  },
-  'master' => {
-    ssl_client_header        => 'HTTP_X_CLIENT_DN',
-    ssl_client_verify_header => 'HTTP_X_CLIENT_VERIFY',
-    reportdir                => '/var/lib/puppet/reports',
-  }
+class site::roles::puppet::master {
+  include ::apache
+  include ::apache::mod::ssl
+  include ::apache::mod::passenger
+  include ::puppet
+  include ::puppet::master
+  include ::puppetdb
+  include ::puppetdb::master::config
 }
 ```
