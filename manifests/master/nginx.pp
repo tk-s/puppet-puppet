@@ -21,6 +21,7 @@ class puppet::master::nginx (
     ensure  => 'stopped',
     enable  => false,
     require => Package['puppet-master'],
+    notify  => [Unicorn::App['puppet-master'], Nginx::Vhost['puppet-master']],
   }
 
   # Create an Nginx vhost

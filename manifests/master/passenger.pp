@@ -19,6 +19,7 @@ class puppet::master::passenger {
     ensure  => 'stopped',
     enable  => false,
     require => Package['puppet-master'],
+    notify  => Apache::Vhost['puppet-master'],
   }
 
   # Configure rack
