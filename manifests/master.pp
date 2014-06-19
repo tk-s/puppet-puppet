@@ -33,4 +33,11 @@ class puppet::master (
     require => Package['rake'],
   }
 
+  if $::puppet::params::puppet_master_common_package {
+    package { 'puppet-master-common':
+      name   => $::puppet::params::puppet_master_common_package,
+      ensure => $package_ensure,
+    }
+  }
+
 }
