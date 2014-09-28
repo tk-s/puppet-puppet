@@ -7,6 +7,8 @@ class puppet::master (
   $config_file    = $::puppet::params::config_file,
 ) inherits puppet::params {
 
+  include puppet
+
   $settings.each |$setting, $value| {
     ini_setting { "${config_file} master/${setting}":
       ensure  => present,
@@ -15,7 +17,7 @@ class puppet::master (
       setting => $setting,
       value   => $value,
       tag     => 'puppet-config',
-      require => Package['puppet'],
+      require => Class['puppet'],
     }
   }
 
