@@ -36,6 +36,14 @@ class puppet::master (
     ensure  => $package_ensure,
   }
 
+  if $puppet::params::master_common {
+    package { 'puppetmaster-common':
+      name   => $puppet::params::puppetmaster_common,
+      ensure => $package_ensure,
+      before => Package['puppet-master'],
+    }
+  }
+
   case $servertype {
     'passenger': {
       include puppet::master::passenger

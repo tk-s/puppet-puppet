@@ -10,6 +10,14 @@ class puppet (
     ensure => $package_ensure,
   }
 
+  if $puppet::params::package_common {
+    package { 'puppet-common':
+      name   => $puppet::params::package_common,
+      ensure => $package_ensure,
+      before => Package['puppet'],
+    }
+  }
+
   $settings.each |$setting, $value| {
     ini_setting { "${config_file} main/${setting}":
       ensure  => present,
