@@ -37,7 +37,7 @@ class puppet::master::passenger {
   }
 
   # Create Apache vhost
-  $ssldir = $::puppet::settings['ssldir']
+  $ssldir = $::puppet::master::settings['ssldir']
   apache::vhost { 'puppet-master':
     servername        => $::fqdn,
     ip                => '*',
