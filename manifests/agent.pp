@@ -27,11 +27,18 @@ class puppet::agent (
 
     case $::lsbdistid {
       'Ubuntu': {
+        file { '/etc/default/puppet':
+          ensure => present,
+          owner  => 'root',
+          group  => 'root',
+          mode   => '0644',
+        }
+
         file_line { '/etc/default/puppet START':
           path    => '/etc/default/puppet',
           line    => 'START=yes',
           match   => '^START=',
-          require => Package['puppet'],
+          require => [Package['puppet'], File['/etc/default/puppet']],
         }
       }
     }

@@ -1,7 +1,7 @@
 class puppet::master (
   $settings,
-  $master_package = $::puppet::params::master_package,
-  $package_ensure = $::puppet::params::package_ensure,
+  $master_package = $::puppet::params::puppet_master_package,
+  $package_ensure = $::puppet::params::puppet_package_ensure,
   $config_file    = $::puppet::params::config_file,
 ) inherits puppet::params {
 
