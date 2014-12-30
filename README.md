@@ -1,13 +1,6 @@
 # puppet-puppet
 
-This is a small puppet module to configure Puppet. It is roughly based on the [puppetlabs-operations](http://github.com/puppetlabs-operations/puppet-puppet) module.
-
-To configure the Puppet Master with Nginx, you'll need the following modules:
-
-* [jtopjian/nginx](https://github.com/jtopjian/puppet-nginx)
-* [jtopjian/unicorn](https://github.com/jtopjian/puppet-unicorn)
-
-Or to configure the Puppet Master to be hosted through Passenger, you'll need the [puppetlabs/apache](https://github.com/puppetlabs/puppetlabs-apache) module.
+Installs and configures Puppet agent and Puppet-server
 
 ## Usage
 
@@ -44,21 +37,21 @@ puppet::agent::settings:
   report: true
   environment: "%{::environment}"
 # puppet.conf [master] settings
-puppet::master::settings:
+puppet::server::puppet_conf_settings:
   ca: true
-# puppet master configuration
-puppet::master::servertype: 'passenger'
+  ssldir: '/var/lib/puppet/ssl'
+# /etc/default/puppetserver settings
+puppet::server::default_settings:
+  JAVA_ARGS: '-Xms1g -Xmx1g -XX:MaxPermSize=256m'
+
 ```
 
 Then to configure a server as a Puppet Master, create a class like this:
 
 ```puppet
-class site::roles::puppet::master {
-  include ::apache
-  include ::apache::mod::ssl
-  include ::apache::mod::passenger
+class site::roles::puppet_server {
   include ::puppet
-  include ::puppet::master
+  include ::puppet::server
   include ::puppetdb
   include ::puppetdb::master::config
 }
