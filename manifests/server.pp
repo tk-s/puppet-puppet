@@ -45,4 +45,10 @@ class puppet::server (
     }
   }
 
+  server { 'puppetserver':
+    ensure => $service_ensure,
+    enable => $service_enable,
+    name   => $::puppet::params::server_service,
+  }
+
 }
