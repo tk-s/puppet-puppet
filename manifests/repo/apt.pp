@@ -1,3 +1,7 @@
+# == Class: puppet::repo::apt
+#
+# Installs the Puppet apt repo
+#
 class puppet::repo::apt {
   apt::source { 'puppetlabs':
     location   => 'http://apt.puppetlabs.com',
