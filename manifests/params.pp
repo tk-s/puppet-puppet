@@ -14,8 +14,16 @@ class puppet::params {
       $server_service_name = 'puppetserver'
       $server_default_file = '/etc/default/puppetserver'
     }
+    'RedHat': {
+      $config_file         = '/etc/puppet/puppet.conf'
+      $puppet_package_name = 'puppet'
+      $agent_service_name  = 'puppet'
+      $server_package_name = 'puppetserver'
+      $server_service_name = 'puppetserver'
+      $server_default_file = '/etc/default/puppetserver'
+    }
     default: {
-      notify { "There are no params for ${::lsbdistid} yet.": }
+      notify { "There are no params for ${::osfamily} yet.": }
     }
   }
 
